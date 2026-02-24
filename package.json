@@ -1,0 +1,10 @@
+{
+  "name": "team-task-notes-tool",
+  "version": "1.0.0",
+  "description": "Ein kleines Team-Tool für Aufgaben mit Frist, Details und Erledigungsstatus",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  }
+}

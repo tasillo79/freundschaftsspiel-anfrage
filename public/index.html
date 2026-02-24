@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Team Aufgaben-Notizen</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Team Aufgaben-Notizen</h1>
+      <p class="subtitle">Aufgaben mit Details, Frist und Erledigungsstatus verwalten.</p>
+
+      <section class="card">
+        <h2>Neue Aufgabe</h2>
+        <form id="task-form">
+          <label>
+            Titel
+            <input name="title" required minlength="3" />
+          </label>
+          <label>
+            Details
+            <textarea name="details" required minlength="5"></textarea>
+          </label>
+          <label>
+            Zuständig (optional)
+            <input name="assignee" />
+          </label>
+          <label>
+            Frist
+            <input type="date" name="dueDate" required />
+          </label>
+          <button type="submit">Aufgabe speichern</button>
+        </form>
+        <p id="form-message" role="status"></p>
+      </section>
+
+      <section class="card">
+        <h2>Offene und erledigte Aufgaben</h2>
+        <ul id="task-list"></ul>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
