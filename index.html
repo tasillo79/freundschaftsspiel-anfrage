@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finanzübersicht</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Finanzübersicht</h1>
+      <p>Verwalte laufende Einnahmen, Ausgaben, Rücklagen und geplante Ausgaben.</p>
+    </header>
+
+    <main>
+      <section class="card" aria-labelledby="summary-title">
+        <h2 id="summary-title">Zusammenfassung</h2>
+        <div class="summary-grid">
+          <article>
+            <h3>Monatliche Einnahmen</h3>
+            <p id="sum-income">0,00 €</p>
+          </article>
+          <article>
+            <h3>Monatliche Ausgaben (fix)</h3>
+            <p id="sum-fixed">0,00 €</p>
+          </article>
+          <article>
+            <h3>Monatliche Ausgaben (variabel)</h3>
+            <p id="sum-variable">0,00 €</p>
+          </article>
+          <article>
+            <h3>Rücklagen-Stand</h3>
+            <p id="sum-reserve">0,00 €</p>
+          </article>
+          <article>
+            <h3>Künftige Ausgaben</h3>
+            <p id="sum-future">0,00 €</p>
+          </article>
+          <article class="highlight">
+            <h3>Monatlicher Saldo</h3>
+            <p id="sum-balance">0,00 €</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="entry-title">
+        <h2 id="entry-title">Eintrag erfassen</h2>
+        <form id="entry-form">
+          <div class="form-grid">
+            <label>
+              Typ
+              <select id="entry-type" required>
+                <option value="income">Einnahme (laufend)</option>
+                <option value="expense-fixed">Ausgabe (fix)</option>
+                <option value="expense-variable">Ausgabe (variabel)</option>
+                <option value="reserve-in">Rücklage Zugang</option>
+                <option value="reserve-out">Rücklage Abgang</option>
+                <option value="future-expense">Künftige Ausgabe</option>
+              </select>
+            </label>
+
+            <label>
+              Betrag (€)
+              <input id="entry-amount" type="number" min="0" step="0.01" placeholder="z. B. 1200" required />
+            </label>
+
+            <label>
+              Bezeichnung
+              <input id="entry-label" type="text" maxlength="80" placeholder="z. B. Miete" required />
+            </label>
+
+            <label>
+              Datum
+              <input id="entry-date" type="date" required />
+            </label>
+
+            <label class="full-width" id="recurring-wrap">
+              <input id="entry-recurring" type="checkbox" />
+              Laufend / monatlich
+            </label>
+          </div>
+          <button type="submit">Eintrag hinzufügen</button>
+        </form>
+      </section>
+
+      <section class="card" aria-labelledby="table-title">
+        <div class="table-head">
+          <h2 id="table-title">Alle Einträge</h2>
+          <button id="clear-all" class="danger" type="button">Alle löschen</button>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Datum</th>
+                <th>Typ</th>
+                <th>Bezeichnung</th>
+                <th>Betrag</th>
+                <th>Rhythmus</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="entries-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <template id="entry-row-template">
+      <tr>
+        <td class="col-date"></td>
+        <td class="col-type"></td>
+        <td class="col-label"></td>
+        <td class="col-amount"></td>
+        <td class="col-recurring"></td>
+        <td><button type="button" class="delete-btn">Löschen</button></td>
+      </tr>
+    </template>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
