@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finanzplaner Pro</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #171a21;
+      --panel-2: #1e222b;
+      --text: #e8ecf3;
+      --muted: #9aa3b2;
+      --green: #38d16a;
+      --red: #ff5f6d;
+      --red-dark: #7f1d26;
+      --accent: #4b7bec;
+      --border: #2a3140;
+      --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #0c0e12 0%, var(--bg) 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1200px, 95vw);
+      margin: 28px auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    h1, h2, h3 { margin: 0 0 12px; }
+    h1 { font-size: clamp(1.4rem, 2vw, 2rem); }
+    h2 { font-size: 1.1rem; color: #d8deea; }
+    h3 { font-size: 1rem; color: #d8deea; }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    .kpi {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .kpi .label {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+    }
+    .kpi .value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: .3px;
+    }
+
+    .green { color: var(--green); }
+    .red { color: var(--red); }
+
+    .saldo-negative {
+      color: var(--red);
+      animation: blink 1.2s infinite;
+      text-shadow: 0 0 8px rgba(255,95,109,.28);
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .45; }
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: .82rem;
+      letter-spacing: .2px;
+      text-transform: uppercase;
+    }
+
+    .sumline {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .controls {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 9px 12px;
+      cursor: pointer;
+      background: #2b3242;
+      color: #f1f5ff;
+      transition: .2s ease;
+      font-weight: 600;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    .btn-accent { background: var(--accent); }
+    .btn-danger { background: #862630; }
+    .icon-btn {
+      background: transparent;
+      padding: 4px 6px;
+      margin-right: 3px;
+      border: 1px solid transparent;
+      font-size: 1rem;
+    }
+    .icon-btn:hover { border-color: var(--border); }
+
+    .inline-form {
+      display: grid;
+      grid-template-columns: 2fr 1fr auto;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .invoice-form {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr auto;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    input, select {
+      background: #10141d;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 10px;
+      width: 100%;
+    }
+
+    .status {
+      font-weight: 600;
+      font-size: .85rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      display: inline-block;
+    }
+    .status-paid { color: var(--green); background: rgba(56,209,106,0.09); border-color: rgba(56,209,106,.3); }
+    .status-open { color: #f3cd6f; background: rgba(243,205,111,0.1); border-color: rgba(243,205,111,.34); }
+    .status-overdue { color: var(--red); background: rgba(255,95,109,0.1); border-color: rgba(255,95,109,.42); }
+
+    .message {
+      min-height: 20px;
+      color: var(--red);
+      font-size: .88rem;
+      margin-top: 6px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.58);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+
+    .modal {
+      width: min(520px, 95vw);
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .modal-grid {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .sr-only {
+      position: absolute;
+      left: -10000px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>Finanzplaner Pro</h1>
+      <div class="dashboard">
+        <div class="kpi">
+          <div class="label">Gesamteinnahmen</div>
+          <div class="value green" id="kpi-income">0,00 €</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Gesamtausgaben (Fix + Variabel + Rechnungen)</div>
+          <div class="value red" id="kpi-expenses">0,00 €</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Verfügbares Saldo</div>
+          <div class="value" id="kpi-balance">0,00 €</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Haushaltsbudget</h2>
+      <div class="grid-3" id="budget-sections"></div>
+    </section>
+
+    <section class="card">
+      <h2>Ausgaben- & Rechnungsverwaltung</h2>
+      <form id="invoice-form" class="invoice-form">
+        <input type="text" name="recipient" placeholder="Empfänger" required />
+        <input type="number" name="amount" placeholder="Betrag" step="0.01" min="0" required />
+        <input type="date" name="dueDate" required />
+        <button type="submit" class="btn-accent">Rechnung hinzufügen</button>
+      </form>
+      <table>
+        <thead>
+          <tr>
+            <th>Empfänger</th>
+            <th>Betrag</th>
+            <th>Frist</th>
+            <th>Status</th>
+            <th>Bezahlt</th>
+            <th>Aktionen</th>
+          </tr>
+        </thead>
+        <tbody id="invoice-tbody"></tbody>
+      </table>
+      <div class="sumline">Rechnungssumme: <strong id="invoice-sum" class="red">0,00 €</strong></div>
+      <div class="message" id="invoice-msg"></div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="edit-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <h3 id="modal-title">Eintrag bearbeiten</h3>
+      <div class="modal-grid" id="modal-fields"></div>
+      <div class="message" id="modal-msg"></div>
+      <div class="modal-actions">
+        <button type="button" id="modal-cancel">Abbrechen</button>
+        <button type="button" id="modal-save" class="btn-accent">Speichern</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'financePlannerData_v1';
+
+    const sectionConfig = {
+      incomes: { title: 'Einnahmen', sumClass: 'green' },
+      fixedExpenses: { title: 'Fixe Ausgaben', sumClass: 'red' },
+      variableExpenses: { title: 'Variable Ausgaben', sumClass: 'red' }
+    };
+
+    const defaultData = {
+      incomes: [],
+      fixedExpenses: [],
+      variableExpenses: [],
+      invoices: []
+    };
+
+    let appState = loadState();
+    let editContext = null;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(defaultData);
+        const parsed = JSON.parse(raw);
+        return {
+          incomes: Array.isArray(parsed.incomes) ? parsed.incomes : [],
+          fixedExpenses: Array.isArray(parsed.fixedExpenses) ? parsed.fixedExpenses : [],
+          variableExpenses: Array.isArray(parsed.variableExpenses) ? parsed.variableExpenses : [],
+          invoices: Array.isArray(parsed.invoices) ? parsed.invoices : []
+        };
+      } catch {
+        return structuredClone(defaultData);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    }
+
+    function uid() {
+      return (crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`);
+    }
+
+    function parseAmount(value) {
+      const amount = Number(value);
+      return Number.isFinite(amount) ? amount : NaN;
+    }
+
+    function validText(value) {
+      return typeof value === 'string' && value.trim().length > 0;
+    }
+
+    function validAmount(value) {
+      const amount = parseAmount(value);
+      return Number.isFinite(amount) && amount >= 0;
+    }
+
+    function formatCurrency(value) {
+      return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(value || 0);
+    }
+
+    function sumBy(list) {
+      return list.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+    }
+
+    function getInvoiceStatus(invoice) {
+      if (invoice.paid) return 'paid';
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const due = new Date(invoice.dueDate);
+      due.setHours(0, 0, 0, 0);
+      return due < today ? 'overdue' : 'open';
+    }
+
+    function statusBadge(status) {
+      if (status === 'paid') return '<span class="status status-paid">Bezahlt</span>';
+      if (status === 'overdue') return '<span class="status status-overdue">Überfällig</span>';
+      return '<span class="status status-open">Offen</span>';
+    }
+
+    function renderBudgetSections() {
+      const root = document.getElementById('budget-sections');
+      root.innerHTML = '';
+
+      Object.entries(sectionConfig).forEach(([key, cfg]) => {
+        const entries = appState[key];
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <h3>${cfg.title}</h3>
+          <table>
+            <thead>
+              <tr><th>Bezeichnung</th><th>Betrag</th><th>Aktionen</th></tr>
+            </thead>
+            <tbody id="tbody-${key}"></tbody>
+          </table>
+          <div class="sumline">Summe: <strong id="sum-${key}" class="${cfg.sumClass}">${formatCurrency(sumBy(entries))}</strong></div>
+          <form class="inline-form" data-section="${key}">
+            <input type="text" name="label" placeholder="Bezeichnung" required />
+            <input type="number" name="amount" placeholder="Betrag" step="0.01" min="0" required />
+            <button type="submit" class="btn-accent">Hinzufügen</button>
+          </form>
+          <div class="message" id="msg-${key}"></div>
+        `;
+        root.appendChild(card);
+
+        const tbody = card.querySelector(`#tbody-${key}`);
+        tbody.innerHTML = entries.map(entry => `
+          <tr>
+            <td>${escapeHtml(entry.label)}</td>
+            <td>${formatCurrency(entry.amount)}</td>
+            <td>
+              <button class="icon-btn" title="Bearbeiten" data-action="edit" data-section="${key}" data-id="${entry.id}">✏️</button>
+              <button class="icon-btn" title="Löschen" data-action="delete" data-section="${key}" data-id="${entry.id}">🗑️</button>
+            </td>
+          </tr>
+        `).join('');
+      });
+    }
+
+    function renderInvoices() {
+      const tbody = document.getElementById('invoice-tbody');
+      tbody.innerHTML = appState.invoices.map(inv => {
+        const status = getInvoiceStatus(inv);
+        return `
+          <tr>
+            <td>${escapeHtml(inv.recipient)}</td>
+            <td>${formatCurrency(inv.amount)}</td>
+            <td>${escapeHtml(inv.dueDate)}</td>
+            <td>${statusBadge(status)}</td>
+            <td>
+              <input type="checkbox" ${inv.paid ? 'checked' : ''} data-action="toggle-paid" data-id="${inv.id}" aria-label="Bezahlt markieren" />
+            </td>
+            <td>
+              <button class="icon-btn" title="Bearbeiten" data-action="edit-invoice" data-id="${inv.id}">✏️</button>
+              <button class="icon-btn" title="Löschen" data-action="delete-invoice" data-id="${inv.id}">🗑️</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      const invoiceSum = sumBy(appState.invoices);
+      document.getElementById('invoice-sum').textContent = formatCurrency(invoiceSum);
+    }
+
+    function renderDashboard() {
+      const totalIncome = sumBy(appState.incomes);
+      const totalExpenses = sumBy(appState.fixedExpenses) + sumBy(appState.variableExpenses) + sumBy(appState.invoices);
+      const balance = totalIncome - totalExpenses;
+
+      document.getElementById('kpi-income').textContent = formatCurrency(totalIncome);
+      document.getElementById('kpi-expenses').textContent = formatCurrency(totalExpenses);
+
+      const balanceNode = document.getElementById('kpi-balance');
+      balanceNode.textContent = formatCurrency(balance);
+      balanceNode.classList.remove('green', 'red', 'saldo-negative');
+      if (balance >= 0) {
+        balanceNode.classList.add('green');
+      } else {
+        balanceNode.classList.add('red', 'saldo-negative');
+      }
+    }
+
+    function renderAll() {
+      renderBudgetSections();
+      renderInvoices();
+      renderDashboard();
+      attachDynamicHandlers();
+    }
+
+    function attachDynamicHandlers() {
+      document.querySelectorAll('.inline-form').forEach(form => {
+        form.onsubmit = (e) => {
+          e.preventDefault();
+          const section = form.dataset.section;
+          const label = form.label.value.trim();
+          const amount = parseAmount(form.amount.value);
+          const msg = document.getElementById(`msg-${section}`);
+          msg.textContent = '';
+
+          if (!validText(label) || !validAmount(amount)) {
+            msg.textContent = 'Bitte gültige Bezeichnung und nicht-negativen Zahlenbetrag eingeben.';
+            return;
+          }
+
+          appState[section].push({ id: uid(), label, amount });
+          saveState();
+          renderAll();
+        };
+      });
+
+      document.querySelectorAll('[data-action="edit"]').forEach(btn => {
+        btn.onclick = () => openEditModal('budget', btn.dataset.section, btn.dataset.id);
+      });
+
+      document.querySelectorAll('[data-action="delete"]').forEach(btn => {
+        btn.onclick = () => {
+          const section = btn.dataset.section;
+          appState[section] = appState[section].filter(item => item.id !== btn.dataset.id);
+          saveState();
+          renderAll();
+        };
+      });
+
+      document.querySelectorAll('[data-action="toggle-paid"]').forEach(chk => {
+        chk.onchange = () => {
+          const invoice = appState.invoices.find(i => i.id === chk.dataset.id);
+          if (!invoice) return;
+          invoice.paid = chk.checked;
+          saveState();
+          renderAll();
+        };
+      });
+
+      document.querySelectorAll('[data-action="edit-invoice"]').forEach(btn => {
+        btn.onclick = () => openEditModal('invoice', null, btn.dataset.id);
+      });
+
+      document.querySelectorAll('[data-action="delete-invoice"]').forEach(btn => {
+        btn.onclick = () => {
+          appState.invoices = appState.invoices.filter(item => item.id !== btn.dataset.id);
+          saveState();
+          renderAll();
+        };
+      });
+    }
+
+    function openEditModal(type, section, id) {
+      const backdrop = document.getElementById('edit-modal');
+      const fields = document.getElementById('modal-fields');
+      const msg = document.getElementById('modal-msg');
+      msg.textContent = '';
+
+      if (type === 'budget') {
+        const entry = appState[section].find(i => i.id === id);
+        if (!entry) return;
+        editContext = { type, section, id };
+        fields.innerHTML = `
+          <label>Bezeichnung<input id="edit-label" value="${escapeHtml(entry.label)}" /></label>
+          <label>Betrag<input id="edit-amount" type="number" step="0.01" min="0" value="${entry.amount}" /></label>
+        `;
+      } else {
+        const invoice = appState.invoices.find(i => i.id === id);
+        if (!invoice) return;
+        editContext = { type, id };
+        fields.innerHTML = `
+          <label>Empfänger<input id="edit-recipient" value="${escapeHtml(invoice.recipient)}" /></label>
+          <label>Betrag<input id="edit-amount" type="number" step="0.01" min="0" value="${invoice.amount}" /></label>
+          <label>Frist<input id="edit-dueDate" type="date" value="${invoice.dueDate}" /></label>
+          <label>Bezahlt
+            <select id="edit-paid">
+              <option value="false" ${invoice.paid ? '' : 'selected'}>Nein</option>
+              <option value="true" ${invoice.paid ? 'selected' : ''}>Ja</option>
+            </select>
+          </label>
+        `;
+      }
+
+      backdrop.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('edit-modal').style.display = 'none';
+      document.getElementById('modal-fields').innerHTML = '';
+      document.getElementById('modal-msg').textContent = '';
+      editContext = null;
+    }
+
+    function saveModal() {
+      const msg = document.getElementById('modal-msg');
+      msg.textContent = '';
+      if (!editContext) return;
+
+      if (editContext.type === 'budget') {
+        const label = document.getElementById('edit-label').value.trim();
+        const amount = parseAmount(document.getElementById('edit-amount').value);
+
+        if (!validText(label) || !validAmount(amount)) {
+          msg.textContent = 'Bitte gültige Eingaben für Bezeichnung und Betrag verwenden.';
+          return;
+        }
+
+        const entry = appState[editContext.section].find(i => i.id === editContext.id);
+        if (!entry) return;
+        entry.label = label;
+        entry.amount = amount;
+      } else {
+        const recipient = document.getElementById('edit-recipient').value.trim();
+        const amount = parseAmount(document.getElementById('edit-amount').value);
+        const dueDate = document.getElementById('edit-dueDate').value;
+        const paid = document.getElementById('edit-paid').value === 'true';
+
+        if (!validText(recipient) || !validAmount(amount) || !validText(dueDate)) {
+          msg.textContent = 'Bitte Empfänger, Betrag und Frist korrekt ausfüllen.';
+          return;
+        }
+
+        const invoice = appState.invoices.find(i => i.id === editContext.id);
+        if (!invoice) return;
+        invoice.recipient = recipient;
+        invoice.amount = amount;
+        invoice.dueDate = dueDate;
+        invoice.paid = paid;
+      }
+
+      saveState();
+      closeModal();
+      renderAll();
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    document.getElementById('invoice-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const form = e.currentTarget;
+      const msg = document.getElementById('invoice-msg');
+      msg.textContent = '';
+
+      const recipient = form.recipient.value.trim();
+      const amount = parseAmount(form.amount.value);
+      const dueDate = form.dueDate.value;
+
+      if (!validText(recipient) || !validAmount(amount) || !validText(dueDate)) {
+        msg.textContent = 'Bitte alle Rechnungsfelder korrekt ausfüllen.';
+        return;
+      }
+
+      appState.invoices.push({ id: uid(), recipient, amount, dueDate, paid: false });
+      form.reset();
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById('modal-cancel').addEventListener('click', closeModal);
+    document.getElementById('modal-save').addEventListener('click', saveModal);
+    document.getElementById('edit-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'edit-modal') closeModal();
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>
