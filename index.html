@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finanzübersicht</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Finanzübersicht</h1>
+      <p>Haushaltsbudget, Rechnungen und finanzielle Gegenüberstellung</p>
+    </header>
+
+    <main>
+      <!-- ─── Dashboard ─── -->
+      <section class="card" aria-labelledby="dashboard-title">
+        <h2 id="dashboard-title">Finanzielle Gegenüberstellung</h2>
+        <div class="dashboard-grid">
+          <article class="dash-item dash-income">
+            <h3>Gesamteinnahmen</h3>
+            <p id="dash-einnahmen">0,00&nbsp;€</p>
+          </article>
+          <article class="dash-item dash-expense">
+            <h3>Gesamtausgaben</h3>
+            <p id="dash-ausgaben">0,00&nbsp;€</p>
+          </article>
+          <article class="dash-item dash-balance">
+            <h3>Verfügbares Saldo</h3>
+            <p id="dash-saldo" class="saldo-positive">0,00&nbsp;€</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ─── Einnahmen ─── -->
+      <section class="card" aria-labelledby="einnahmen-title">
+        <div class="section-header">
+          <h2 id="einnahmen-title">Einnahmen</h2>
+          <span class="section-sum sum-income" id="sum-einnahmen">0,00&nbsp;€</span>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Bezeichnung</th>
+                <th>Betrag</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="einnahmen-body"></tbody>
+          </table>
+        </div>
+        <form class="inline-add" data-category="einnahmen">
+          <div class="form-group">
+            <label for="einnahmen-bez">Bezeichnung</label>
+            <input id="einnahmen-bez" type="text" placeholder="z.B. Gehalt" required />
+          </div>
+          <div class="form-group">
+            <label for="einnahmen-betrag">Betrag (€)</label>
+            <input id="einnahmen-betrag" type="number" placeholder="0,00" step="0.01" min="0.01" required />
+          </div>
+          <button type="submit" class="btn-primary">Hinzufügen</button>
+        </form>
+      </section>
+
+      <!-- ─── Fixe Ausgaben ─── -->
+      <section class="card" aria-labelledby="fixausgaben-title">
+        <div class="section-header">
+          <h2 id="fixausgaben-title">Fixe Ausgaben</h2>
+          <span class="section-sum sum-expense" id="sum-fixausgaben">0,00&nbsp;€</span>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Bezeichnung</th>
+                <th>Betrag</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="fixausgaben-body"></tbody>
+          </table>
+        </div>
+        <form class="inline-add" data-category="fixausgaben">
+          <div class="form-group">
+            <label for="fixausgaben-bez">Bezeichnung</label>
+            <input id="fixausgaben-bez" type="text" placeholder="z.B. Miete" required />
+          </div>
+          <div class="form-group">
+            <label for="fixausgaben-betrag">Betrag (€)</label>
+            <input id="fixausgaben-betrag" type="number" placeholder="0,00" step="0.01" min="0.01" required />
+          </div>
+          <button type="submit" class="btn-primary">Hinzufügen</button>
+        </form>
+      </section>
+
+      <!-- ─── Variable Ausgaben ─── -->
+      <section class="card" aria-labelledby="variable-title">
+        <div class="section-header">
+          <h2 id="variable-title">Variable Ausgaben</h2>
+          <span class="section-sum sum-expense" id="sum-variable">0,00&nbsp;€</span>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Bezeichnung</th>
+                <th>Betrag</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="variable-body"></tbody>
+          </table>
+        </div>
+        <form class="inline-add" data-category="variable">
+          <div class="form-group">
+            <label for="variable-bez">Bezeichnung</label>
+            <input id="variable-bez" type="text" placeholder="z.B. Verpflegung" required />
+          </div>
+          <div class="form-group">
+            <label for="variable-betrag">Betrag (€)</label>
+            <input id="variable-betrag" type="number" placeholder="0,00" step="0.01" min="0.01" required />
+          </div>
+          <button type="submit" class="btn-primary">Hinzufügen</button>
+        </form>
+      </section>
+
+      <!-- ─── Rechnungsverwaltung ─── -->
+      <section class="card" aria-labelledby="rechnungen-title">
+        <h2 id="rechnungen-title">Ausgaben- &amp; Rechnungsverwaltung</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Empfänger</th>
+                <th>Betrag</th>
+                <th>Frist</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="rechnungen-body"></tbody>
+          </table>
+        </div>
+        <form class="inline-add" id="rechnung-form">
+          <div class="form-group">
+            <label for="rechnung-empf">Empfänger</label>
+            <input id="rechnung-empf" type="text" placeholder="z.B. Stadtwerke" required />
+          </div>
+          <div class="form-group">
+            <label for="rechnung-betrag">Betrag (€)</label>
+            <input id="rechnung-betrag" type="number" placeholder="0,00" step="0.01" min="0.01" required />
+          </div>
+          <div class="form-group">
+            <label for="rechnung-frist">Frist</label>
+            <input id="rechnung-frist" type="date" required />
+          </div>
+          <button type="submit" class="btn-primary">Hinzufügen</button>
+        </form>
+      </section>
+    </main>
+
+    <!-- ─── Edit Modal ─── -->
+    <div class="modal-overlay" id="edit-modal" hidden>
+      <div class="modal">
+        <h3 id="modal-title">Eintrag bearbeiten</h3>
+        <form id="modal-form">
+          <div class="modal-field" id="modal-bezeichnung-wrap">
+            <label for="modal-bezeichnung">Bezeichnung</label>
+            <input id="modal-bezeichnung" type="text" required />
+          </div>
+          <div class="modal-field" id="modal-empfaenger-wrap" hidden>
+            <label for="modal-empfaenger">Empfänger</label>
+            <input id="modal-empfaenger" type="text" required />
+          </div>
+          <div class="modal-field">
+            <label for="modal-betrag">Betrag (€)</label>
+            <input id="modal-betrag" type="number" step="0.01" min="0.01" required />
+          </div>
+          <div class="modal-field" id="modal-frist-wrap" hidden>
+            <label for="modal-frist">Frist</label>
+            <input id="modal-frist" type="date" required />
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" id="modal-cancel">Abbrechen</button>
+            <button type="submit" class="btn-primary">Speichern</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ─── Templates ─── -->
+    <template id="budget-row-template">
+      <tr>
+        <td class="col-bezeichnung"></td>
+        <td class="col-betrag"></td>
+        <td class="col-actions">
+          <button type="button" class="btn-icon btn-edit" title="Bearbeiten">&#9998;</button>
+          <button type="button" class="btn-icon btn-delete" title="Löschen">&#128465;</button>
+        </td>
+      </tr>
+    </template>
+
+    <template id="rechnung-row-template">
+      <tr>
+        <td class="col-empfaenger"></td>
+        <td class="col-betrag"></td>
+        <td class="col-frist"></td>
+        <td class="col-status"><span class="status-badge"></span></td>
+        <td class="col-actions">
+          <button type="button" class="btn-icon btn-toggle-paid" title="Als bezahlt markieren">&#10004;</button>
+          <button type="button" class="btn-icon btn-edit" title="Bearbeiten">&#9998;</button>
+          <button type="button" class="btn-icon btn-delete" title="Löschen">&#128465;</button>
+        </td>
+      </tr>
+    </template>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

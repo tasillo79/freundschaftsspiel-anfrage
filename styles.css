@@ -1,0 +1,574 @@
+:root {
+  color-scheme: dark;
+
+  /* Backgrounds */
+  --bg-body: #0a0a0f;
+  --bg-card: #13131f;
+  --bg-card-hover: #1a1a2e;
+  --bg-input: #0f0f1a;
+  --bg-table-hover: #1a1a2e;
+
+  /* Text */
+  --text-primary: #f0f0f5;
+  --text-secondary: #9a9ab0;
+  --text-muted: #5c5c72;
+
+  /* Semantic */
+  --color-income: #22c55e;
+  --color-income-bg: rgba(34, 197, 94, 0.1);
+  --color-expense: #ef4444;
+  --color-expense-bg: rgba(239, 68, 68, 0.1);
+  --color-accent: #3b82f6;
+  --color-accent-hover: #2563eb;
+  --color-warning: #f59e0b;
+  --color-warning-bg: rgba(245, 158, 11, 0.1);
+  --color-paid: #22c55e;
+  --color-paid-bg: rgba(34, 197, 94, 0.12);
+  --color-open: #f59e0b;
+  --color-open-bg: rgba(245, 158, 11, 0.12);
+  --color-overdue: #ef4444;
+  --color-overdue-bg: rgba(239, 68, 68, 0.12);
+
+  /* Borders & Radius */
+  --border-color: #1e1e30;
+  --border-radius: 12px;
+  --border-radius-sm: 8px;
+
+  /* Shadows */
+  --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.4);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+}
+
+/* ─── Reset & Base ─── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: var(--bg-body);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  margin: 0;
+}
+
+/* ─── Layout ─── */
+
+header,
+main {
+  width: min(1120px, 92vw);
+  margin: 0 auto;
+}
+
+header {
+  padding: 2.5rem 0 1.5rem;
+}
+
+header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+header p {
+  color: var(--text-secondary);
+  margin: 0.3rem 0 0;
+  font-size: 0.95rem;
+}
+
+main {
+  display: grid;
+  gap: 1.25rem;
+  padding-bottom: 3rem;
+}
+
+/* ─── Cards ─── */
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-card);
+}
+
+.card h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* ─── Section Header (title + sum) ─── */
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.section-header h2 {
+  margin-bottom: 0;
+}
+
+.section-sum {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.section-sum.sum-income {
+  color: var(--color-income);
+}
+
+.section-sum.sum-expense {
+  color: var(--color-expense);
+}
+
+/* ─── Dashboard ─── */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.dash-item {
+  background: var(--bg-card-hover);
+  border-radius: var(--border-radius-sm);
+  padding: 1.25rem;
+  border-left: 4px solid var(--border-color);
+  transition: transform var(--transition-fast);
+}
+
+.dash-item:hover {
+  transform: translateY(-2px);
+}
+
+.dash-item h3 {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+
+.dash-item p {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.dash-income {
+  border-left-color: var(--color-income);
+}
+
+.dash-income p {
+  color: var(--color-income);
+}
+
+.dash-expense {
+  border-left-color: var(--color-expense);
+}
+
+.dash-expense p {
+  color: var(--color-expense);
+}
+
+.dash-balance {
+  border-left-color: var(--color-accent);
+}
+
+.saldo-positive {
+  color: var(--color-income);
+}
+
+.saldo-negative {
+  color: var(--color-expense);
+  animation: blink-negative 1.5s ease-in-out infinite;
+}
+
+@keyframes blink-negative {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .saldo-negative {
+    animation: none;
+    font-weight: 800;
+  }
+}
+
+/* ─── Tables ─── */
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+tbody td {
+  padding: 0.7rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.92rem;
+}
+
+tbody tr {
+  transition: background var(--transition-fast);
+}
+
+tbody tr:hover {
+  background: var(--bg-table-hover);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.col-betrag {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.col-actions {
+  white-space: nowrap;
+  text-align: right;
+  width: 1%;
+}
+
+.amount-income {
+  color: var(--color-income);
+}
+
+.amount-expense {
+  color: var(--color-expense);
+}
+
+.empty-row td {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 1.5rem 0.5rem;
+}
+
+.empty-row:hover {
+  background: transparent;
+}
+
+/* ─── Overdue Row ─── */
+
+.row-overdue {
+  background: var(--color-overdue-bg);
+}
+
+.row-overdue:hover {
+  background: rgba(239, 68, 68, 0.18);
+}
+
+/* ─── Status Badges ─── */
+
+.status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-bezahlt {
+  background: var(--color-paid-bg);
+  color: var(--color-paid);
+}
+
+.status-offen {
+  background: var(--color-open-bg);
+  color: var(--color-open);
+}
+
+.status-ueberfaellig {
+  background: var(--color-overdue-bg);
+  color: var(--color-overdue);
+}
+
+/* ─── Icon Buttons ─── */
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.3rem 0.45rem;
+  border-radius: 6px;
+  color: var(--text-muted);
+  transition: color var(--transition-fast), background var(--transition-fast);
+  line-height: 1;
+}
+
+.btn-icon:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.btn-edit:hover {
+  color: var(--color-accent);
+}
+
+.btn-delete:hover {
+  color: var(--color-expense);
+}
+
+.btn-toggle-paid {
+  font-weight: 700;
+}
+
+.btn-toggle-paid:hover {
+  color: var(--color-income);
+}
+
+/* ─── Inline Add Forms ─── */
+
+.inline-add {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+  align-items: flex-end;
+}
+
+.inline-add .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.inline-add .form-group label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.inline-add input {
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.55rem 0.7rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.inline-add input:focus {
+  border-color: var(--color-accent);
+}
+
+.inline-add input::placeholder {
+  color: var(--text-muted);
+}
+
+.inline-add input:invalid:not(:placeholder-shown) {
+  border-color: var(--color-expense);
+}
+
+/* ─── Buttons ─── */
+
+.btn-primary {
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.55rem 1.1rem;
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+}
+
+.btn-secondary {
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.55rem 1.1rem;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+/* ─── Modal ─── */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: fade-overlay 200ms ease;
+}
+
+.modal-overlay[hidden] {
+  display: none;
+}
+
+.modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.75rem;
+  width: min(480px, 90vw);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  animation: slide-up 250ms ease;
+}
+
+.modal h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.modal-field label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.modal-field input {
+  font: inherit;
+  font-size: 0.92rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.modal-field input:focus {
+  border-color: var(--color-accent);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+@keyframes fade-overlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Row Animation ─── */
+
+@keyframes fade-in-row {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+tbody tr:not(.empty-row) {
+  animation: fade-in-row var(--transition-normal);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  tbody tr:not(.empty-row),
+  .modal,
+  .modal-overlay {
+    animation: none;
+  }
+}
+
+/* ─── Responsive ─── */
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inline-add {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .inline-add .btn-primary {
+    width: 100%;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.3rem;
+  }
+
+  .card {
+    padding: 0.9rem;
+  }
+
+  .dash-item p {
+    font-size: 1.25rem;
+  }
+}
